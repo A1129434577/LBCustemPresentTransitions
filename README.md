@@ -26,4 +26,4 @@ if ([text containsString:@"下"]) {
     [self presentViewController:presentVC animated:YES completion:nil];
 }
 ```
-![]()
+![](https://github.com/A1129434577/LBCustemPresentTransitions/blob/master/LBCustemPresentTransitions.gif?raw=true)
