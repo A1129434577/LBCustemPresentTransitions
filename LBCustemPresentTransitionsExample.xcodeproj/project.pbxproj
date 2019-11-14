@@ -12,8 +12,8 @@
 		4046AA1D233DEA7600299809 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4046AA1C233DEA7600299809 /* Assets.xcassets */; };
 		4046AA20233DEA7600299809 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4046AA1E233DEA7600299809 /* LaunchScreen.storyboard */; };
 		4046AA23233DEA7600299809 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4046AA22233DEA7600299809 /* main.m */; };
-		4046AA2A233DEACC00299809 /* LBCustemPresentTransitions.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 4046AA29233DEACC00299809 /* LBCustemPresentTransitions.podspec */; };
-		4046AA2E233DEAD600299809 /* LBCustemPresentTransitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4046AA2D233DEAD600299809 /* LBCustemPresentTransitions.m */; };
+		4046AA2A233DEACC00299809 /* LBPresentTransitions.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 4046AA29233DEACC00299809 /* LBPresentTransitions.podspec */; };
+		4046AA2E233DEAD600299809 /* LBPresentTransitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4046AA2D233DEAD600299809 /* LBPresentTransitions.m */; };
 		4046AA31233DEDED00299809 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4046AA30233DEDED00299809 /* TestViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -27,9 +27,9 @@
 		4046AA1F233DEA7600299809 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4046AA21233DEA7600299809 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4046AA22233DEA7600299809 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		4046AA29233DEACC00299809 /* LBCustemPresentTransitions.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LBCustemPresentTransitions.podspec; sourceTree = "<group>"; };
-		4046AA2C233DEAD600299809 /* LBCustemPresentTransitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBCustemPresentTransitions.h; sourceTree = "<group>"; };
-		4046AA2D233DEAD600299809 /* LBCustemPresentTransitions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBCustemPresentTransitions.m; sourceTree = "<group>"; };
+		4046AA29233DEACC00299809 /* LBPresentTransitions.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LBPresentTransitions.podspec; sourceTree = "<group>"; };
+		4046AA2C233DEAD600299809 /* LBPresentTransitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBPresentTransitions.h; sourceTree = "<group>"; };
+		4046AA2D233DEAD600299809 /* LBPresentTransitions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBPresentTransitions.m; sourceTree = "<group>"; };
 		4046AA2F233DEDED00299809 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
 		4046AA30233DEDED00299809 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -48,7 +48,7 @@
 		4046AA04233DEA7300299809 = {
 			isa = PBXGroup;
 			children = (
-				4046AA29233DEACC00299809 /* LBCustemPresentTransitions.podspec */,
+				4046AA29233DEACC00299809 /* LBPresentTransitions.podspec */,
 				4046AA0F233DEA7300299809 /* LBCustemPresentTransitionsExample */,
 				4046AA0E233DEA7300299809 /* Products */,
 			);
@@ -65,7 +65,7 @@
 		4046AA0F233DEA7300299809 /* LBCustemPresentTransitionsExample */ = {
 			isa = PBXGroup;
 			children = (
-				4046AA2B233DEAD600299809 /* LBCustemPresentTransitions */,
+				4046AA2B233DEAD600299809 /* LBPresentTransitions */,
 				4046AA10233DEA7300299809 /* AppDelegate.h */,
 				4046AA11233DEA7300299809 /* AppDelegate.m */,
 				4046AA16233DEA7300299809 /* ViewController.h */,
@@ -80,13 +80,13 @@
 			path = LBCustemPresentTransitionsExample;
 			sourceTree = "<group>";
 		};
-		4046AA2B233DEAD600299809 /* LBCustemPresentTransitions */ = {
+		4046AA2B233DEAD600299809 /* LBPresentTransitions */ = {
 			isa = PBXGroup;
 			children = (
-				4046AA2C233DEAD600299809 /* LBCustemPresentTransitions.h */,
-				4046AA2D233DEAD600299809 /* LBCustemPresentTransitions.m */,
+				4046AA2C233DEAD600299809 /* LBPresentTransitions.h */,
+				4046AA2D233DEAD600299809 /* LBPresentTransitions.m */,
 			);
-			path = LBCustemPresentTransitions;
+			path = LBPresentTransitions;
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
@@ -146,7 +146,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4046AA2A233DEACC00299809 /* LBCustemPresentTransitions.podspec in Resources */,
+				4046AA2A233DEACC00299809 /* LBPresentTransitions.podspec in Resources */,
 				4046AA20233DEA7600299809 /* LaunchScreen.storyboard in Resources */,
 				4046AA1D233DEA7600299809 /* Assets.xcassets in Resources */,
 			);
@@ -160,7 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4046AA18233DEA7300299809 /* ViewController.m in Sources */,
-				4046AA2E233DEAD600299809 /* LBCustemPresentTransitions.m in Sources */,
+				4046AA2E233DEAD600299809 /* LBPresentTransitions.m in Sources */,
 				4046AA12233DEA7300299809 /* AppDelegate.m in Sources */,
 				4046AA23233DEA7600299809 /* main.m in Sources */,
 				4046AA31233DEDED00299809 /* TestViewController.m in Sources */,

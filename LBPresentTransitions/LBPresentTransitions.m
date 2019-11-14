@@ -6,22 +6,20 @@
 //  Copyright © 2016年 刘彬. All rights reserved.
 //
 
-#import "LBCustemPresentTransitions.h"
+#import "LBPresentTransitions.h"
+typedef enum {
+    LBAnimationTypePresent,
+    LBAnimationTypeDismiss,
+} LBTransitionsAnimationType;
 
-@interface LBCustemPresentTransitions ()
-@property (nonatomic,strong)UIView *coverView;;
+
+@interface LBPresentTransitions ()<UIViewControllerAnimatedTransitioning,UINavigationControllerDelegate>
+@property (nonatomic,assign)LBTransitionsAnimationType type;
+@property (nonatomic,strong)UIView *coverView;
+@property (nonatomic,strong)UIVisualEffectView *effectVie;
 @end
 
-@implementation LBCustemPresentTransitions
-
-+(LBCustemPresentTransitions *)shareInstanse{
-    static LBCustemPresentTransitions *modelAnimation = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        modelAnimation = [[LBCustemPresentTransitions alloc] init];
-    });
-    return modelAnimation;
-}
+@implementation LBPresentTransitions
 
 #pragma mark - UIViewControllerAnimatedTransitioning
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
@@ -33,47 +31,74 @@
     //    modalViewVC.view: <UILayoutContainerView: 0x7ffa4a618770; frame = (0 0; 375 667); clipsToBounds = YES; autoresize = W+H; gestureRecognizers = <NSArray: 0x600002efbc60>; layer = <CALayer: 0x6000020bff40>>
     
     UIView *contentView;
-    if ([modalViewVC isKindOfClass:NSClassFromString(@"UINavigationController")]) {
+    if ([modalViewVC isKindOfClass:UINavigationController.self]) {
         contentView = modalViewVC.topViewController.view;
-    }else if ([modalViewVC isKindOfClass:NSClassFromString(@"UIViewController")]){
+    }else if ([modalViewVC isKindOfClass:UIViewController.self]){
         contentView = modalViewVC.view;
     }
     //contentView: <UIView: 0x7ffa4a615ba0; frame = (0 0; 250 44); autoresize = W+H; layer = <CALayer: 0x6000020bfea0>>
-    
 
     if (self.type == LBAnimationTypePresent) {
-        
-        //View to darken the area behind the modal view
-        if (!_coverView) {
+        if (!(_coverViewType == LBTransitionsCoverViewTypeNone)) {
             _coverView = [[UIView alloc] initWithFrame:containerView.bounds];
-            
+            _coverView.alpha = 0;
+            [containerView addSubview:_coverView];
+        }
+        
+        if ((_coverViewType & LBTransitionsCoverViewEffectDark)||
+            (_coverViewType & LBTransitionsCoverViewEffectExtraDark)||
+            (_coverViewType & LBTransitionsCoverViewEffectLight)||
+            (_coverViewType & LBTransitionsCoverViewEffectExtraLight)) {
             UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
             // 磨砂视图
-            UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-            effectView.frame = _coverView.bounds;
-            effectView.alpha = 0.5;
-            [_coverView addSubview:effectView];
-        }else{
-            _coverView.frame = containerView.frame;
+            _effectVie = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+            _effectVie.frame = _coverView.bounds;
+            
+            [_coverView addSubview:_effectVie];
         }
-        [containerView addSubview:_coverView];
+        CGFloat alpha = 1.f;
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_1) {
+            alpha = log(LBTransitionsCoverViewAlpha0_1)/log(2)/10.f;
+        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_2){
+            alpha = log(LBTransitionsCoverViewAlpha0_2)/log(2)/10.f;
+        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_3){
+            alpha = log(LBTransitionsCoverViewAlpha0_3)/log(2)/10.f;
+        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_4){
+            alpha = log(LBTransitionsCoverViewAlpha0_4)/log(2)/10.f;
+        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_5){
+            alpha = log(LBTransitionsCoverViewAlpha0_5)/log(2)/10.f;
+        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_6){
+            alpha = log(LBTransitionsCoverViewAlpha0_6)/log(2)/10.f;
+        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_7){
+            alpha = log(LBTransitionsCoverViewAlpha0_7)/log(2)/10.f;
+        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_8){
+            alpha = log(LBTransitionsCoverViewAlpha0_8)/log(2)/10.f;
+        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_9){
+            alpha = log(LBTransitionsCoverViewAlpha0_9)/log(2)/10.f;
+        }
+        
+        if (_effectVie) {
+            _effectVie.alpha = alpha;
+        }else{
+            _coverView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
+        }
         
         
         //The modal view itself
         switch (self.contentMode) {
-            case LBViewContentModeTop:
+            case LBTransitionsContentModeTop:
                 modalViewVC.view.frame = CGRectMake((CGRectGetWidth(containerView.frame)-CGRectGetWidth(contentView.frame))/2, -CGRectGetHeight(contentView.frame), CGRectGetWidth(contentView.frame), CGRectGetHeight(contentView.frame));
                 break;
-            case LBViewContentModeLeft:
+            case LBTransitionsContentModeLeft:
                 modalViewVC.view.frame = CGRectMake(-CGRectGetWidth(contentView.frame), (CGRectGetHeight(containerView.frame)-CGRectGetHeight(contentView.frame))/2, CGRectGetWidth(contentView.frame), CGRectGetHeight(contentView.frame));
                 break;
-            case LBViewContentModeBottom:
+            case LBTransitionsContentModeBottom:
                 modalViewVC.view.frame = CGRectMake((CGRectGetWidth(containerView.frame)-CGRectGetWidth(contentView.frame))/2, CGRectGetHeight(containerView.frame), CGRectGetWidth(contentView.frame), CGRectGetHeight(contentView.frame));
                 break;
-            case LBViewContentModeRight:
+            case LBTransitionsContentModeRight:
                 modalViewVC.view.frame = CGRectMake(CGRectGetWidth(containerView.frame), (CGRectGetHeight(containerView.frame)-CGRectGetHeight(contentView.frame))/2, CGRectGetWidth(contentView.frame), CGRectGetHeight(contentView.frame));
                 break;
-            case LBViewContentModeCenter:
+            case LBTransitionsContentModeCenter:
                 modalViewVC.view.frame = CGRectMake((CGRectGetWidth(containerView.frame)-CGRectGetWidth(contentView.frame))/2, (CGRectGetHeight(containerView.frame)-CGRectGetHeight(contentView.frame))/2, CGRectGetWidth(contentView.frame), CGRectGetHeight(contentView.frame));
                 modalViewVC.view.transform = CGAffineTransformMakeScale(0, 0);
                 break;
@@ -88,20 +113,20 @@
         [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
             weakSelf.coverView.alpha = 1.0;
             switch (weakSelf.contentMode) {
-                case LBViewContentModeTop:
+                case LBTransitionsContentModeTop:
                     modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), 0, CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
                     break;
-                case LBViewContentModeLeft:
+                case LBTransitionsContentModeLeft:
                     modalViewVC.view.frame = CGRectMake(0, CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
                     break;
-                case LBViewContentModeBottom:
+                case LBTransitionsContentModeBottom:
                     modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), CGRectGetHeight(containerView.frame)-CGRectGetHeight(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
 
                     break;
-                case LBViewContentModeRight:
+                case LBTransitionsContentModeRight:
                     modalViewVC.view.frame = CGRectMake(CGRectGetWidth(containerView.frame)-CGRectGetWidth(modalViewVC.view.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
                     break;
-                case LBViewContentModeCenter:
+                case LBTransitionsContentModeCenter:
                     modalViewVC.view.transform = CGAffineTransformIdentity;
                     break;
                     
@@ -119,20 +144,20 @@
         [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:1.0 options:0 animations:^{
             weakSelf.coverView.alpha = 0.0;
             switch (weakSelf.contentMode) {
-                case LBViewContentModeTop:
+                case LBTransitionsContentModeTop:
                     modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), -CGRectGetHeight(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
                     break;
-                case LBViewContentModeLeft:
+                case LBTransitionsContentModeLeft:
                     modalViewVC.view.frame = CGRectMake(-CGRectGetWidth(modalViewVC.view.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
                     break;
-                case LBViewContentModeBottom:
+                case LBTransitionsContentModeBottom:
                     modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), CGRectGetHeight(containerView.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
                     
                     break;
-                case LBViewContentModeRight:
+                case LBTransitionsContentModeRight:
                     modalViewVC.view.frame = CGRectMake(CGRectGetWidth(containerView.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
                     break;
-                case LBViewContentModeCenter:
+                case LBTransitionsContentModeCenter:
                     modalViewVC.view.transform = CGAffineTransformMakeScale(0, 0);
                     break;
                     
@@ -177,5 +202,4 @@
     [toVC loadView];
     return nil;
 }
-
 @end

@@ -7,11 +7,12 @@
 //
 
 #import "ViewController.h"
-#import "LBCustemPresentTransitions.h"
+#import "LBPresentTransitions.h"
 #import "TestViewController.h"
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSArray<NSString *> *_textArray;
+    LBPresentTransitions *_transitions;
 }
 @end
 
@@ -50,29 +51,30 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    LBCustemPresentTransitions *transitions = [LBCustemPresentTransitions shareInstanse];
+    _transitions = [LBPresentTransitions new];
+    _transitions.coverViewType = LBTransitionsCoverViewAlpha0_5|LBTransitionsCoverViewEffectDark;
     NSString *text = _textArray[indexPath.row];
     if ([text containsString:@"上"]) {
-        transitions.contentMode = LBViewContentModeTop;
+        _transitions.contentMode = LBTransitionsContentModeTop;
     }else if ([text containsString:@"左"]) {
-        transitions.contentMode = LBViewContentModeLeft;
+        _transitions.contentMode = LBTransitionsContentModeLeft;
     }else if ([text containsString:@"下"]) {
-        transitions.contentMode = LBViewContentModeBottom;
+        _transitions.contentMode = LBTransitionsContentModeBottom;
     }else if ([text containsString:@"右"]) {
-        transitions.contentMode = LBViewContentModeRight;
+        _transitions.contentMode = LBTransitionsContentModeRight;
     }else if ([text containsString:@"中"]) {
-        transitions.contentMode = LBViewContentModeCenter;
+        _transitions.contentMode = LBTransitionsContentModeCenter;
     }
     TestViewController *presentVC = [[TestViewController alloc] init];
 
     if ([text containsString:@"下"]) {
         UINavigationController *presentNaVC = [[UINavigationController alloc] initWithRootViewController:presentVC];
         presentNaVC.modalPresentationStyle = UIModalPresentationCustom;
-        presentNaVC.transitioningDelegate = transitions;
+        presentNaVC.transitioningDelegate = _transitions;
         [self presentViewController:presentNaVC animated:YES completion:nil];
     }else{
         presentVC.modalPresentationStyle = UIModalPresentationCustom;
-        presentVC.transitioningDelegate = transitions;
+        presentVC.transitioningDelegate = _transitions;
         [self presentViewController:presentVC animated:YES completion:nil];
     }
 }
