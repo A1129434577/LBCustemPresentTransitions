@@ -25,6 +25,7 @@ typedef enum {
 {
     self = [super init];
     if (self) {
+        self.tapCoverViewDismiss = YES;
         self.coverViewType = LBTransitionsCoverViewAlpha0_5;
     }
     return self;
