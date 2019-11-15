@@ -52,6 +52,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     _transitions = [LBPresentTransitions new];
+    _transitions.tapCoverViewDismiss = YES;
     _transitions.coverViewType = LBTransitionsCoverViewAlpha0_5|LBTransitionsCoverViewEffectDark;
     NSString *text = _textArray[indexPath.row];
     if ([text containsString:@"上"]) {

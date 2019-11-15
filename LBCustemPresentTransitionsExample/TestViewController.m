@@ -55,5 +55,4 @@
 -(void)dismiss{
     [self.navigationController?self.navigationController:self dismissViewControllerAnimated:YES completion:nil];
 }
-
 @end

@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "LBPresentTransitions"
-  spec.version      = "0.0.2"
+  spec.version      = "1.1.2"
   spec.summary      = "自定义Present转场效果"
   spec.description  = "自定义Present转场效果，可以从上、左、下、右、中五个位置Present，是抽屉式弹出View和中间弹窗alertView样式的首选。"
   spec.homepage     = "https://github.com/A1129434577/LBCustemPresentTransitions"

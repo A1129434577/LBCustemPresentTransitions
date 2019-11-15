@@ -18,7 +18,6 @@ typedef NS_ENUM(NSInteger, LBTransitionsContentMode) {
 };
 
 typedef NS_OPTIONS(NSUInteger, LBTransitionsCoverViewType) {
-    LBTransitionsCoverViewTypeNone = 0<<0,//背景无任何遮盖
     //不带磨砂效果的
     LBTransitionsCoverViewAlpha0_1 = 1<<1,//alpha0.1
     LBTransitionsCoverViewAlpha0_2 = 1<<2,
@@ -34,11 +33,14 @@ typedef NS_OPTIONS(NSUInteger, LBTransitionsCoverViewType) {
     LBTransitionsCoverViewEffectExtraDark  = 2<<11,
     LBTransitionsCoverViewEffectLight      = 2<<12,
     LBTransitionsCoverViewEffectExtraLight = 2<<13,
+    //背景无任何遮盖
+    LBTransitionsCoverViewTypeNone = 3<<14,
 };
 //该delegate因为被系统标记weak,所以为了防止过早释放，应该被设置成属性
 @interface LBPresentTransitions : NSObject <UIViewControllerTransitioningDelegate>
 
 @property (nonatomic,assign)LBTransitionsContentMode contentMode;
 @property (nonatomic,assign)LBTransitionsCoverViewType coverViewType;
+@property (nonatomic,assign)BOOL tapCoverViewDismiss;//点击空白让viewControllerDismiss
 
 @end

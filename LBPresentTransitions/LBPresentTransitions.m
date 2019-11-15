@@ -16,10 +16,19 @@ typedef enum {
 @interface LBPresentTransitions ()<UIViewControllerAnimatedTransitioning,UINavigationControllerDelegate>
 @property (nonatomic,assign)LBTransitionsAnimationType type;
 @property (nonatomic,strong)UIView *coverView;
-@property (nonatomic,strong)UIVisualEffectView *effectVie;
+@property (nonatomic,weak)  UIViewController *modalViewVC;
 @end
 
+
 @implementation LBPresentTransitions
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.coverViewType = LBTransitionsCoverViewAlpha0_5;
+    }
+    return self;
+}
 
 #pragma mark - UIViewControllerAnimatedTransitioning
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
@@ -27,62 +36,73 @@ typedef enum {
     UIView *containerView = [transitionContext containerView];
     //    containerView: <UITransitionView: 0x7ffa4a428910; frame = (0 0; 375 667); autoresize = W+H; layer = <CALayer: 0x6000020e1b40>>
     
-    UINavigationController *modalViewVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    UIViewController *modalViewVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    _modalViewVC = modalViewVC;
     //    modalViewVC.view: <UILayoutContainerView: 0x7ffa4a618770; frame = (0 0; 375 667); clipsToBounds = YES; autoresize = W+H; gestureRecognizers = <NSArray: 0x600002efbc60>; layer = <CALayer: 0x6000020bff40>>
     
     UIView *contentView;
     if ([modalViewVC isKindOfClass:UINavigationController.self]) {
-        contentView = modalViewVC.topViewController.view;
+        contentView = ((UINavigationController *)modalViewVC).topViewController.view;
     }else if ([modalViewVC isKindOfClass:UIViewController.self]){
         contentView = modalViewVC.view;
     }
     //contentView: <UIView: 0x7ffa4a615ba0; frame = (0 0; 250 44); autoresize = W+H; layer = <CALayer: 0x6000020bfea0>>
 
     if (self.type == LBAnimationTypePresent) {
-        if (!(_coverViewType == LBTransitionsCoverViewTypeNone)) {
-            _coverView = [[UIView alloc] initWithFrame:containerView.bounds];
-            _coverView.alpha = 0;
-            [containerView addSubview:_coverView];
-        }
+        _coverView = [[UIView alloc] initWithFrame:containerView.bounds];
+        _coverView.alpha = 0;
+        [containerView addSubview:_coverView];
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(coverViewTopGestureAction)];
+        [_coverView addGestureRecognizer:tapGesture];
         
+        UIVisualEffectView *effectView;
         if ((_coverViewType & LBTransitionsCoverViewEffectDark)||
             (_coverViewType & LBTransitionsCoverViewEffectExtraDark)||
             (_coverViewType & LBTransitionsCoverViewEffectLight)||
             (_coverViewType & LBTransitionsCoverViewEffectExtraLight)) {
             UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
             // 磨砂视图
-            _effectVie = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-            _effectVie.frame = _coverView.bounds;
-            
-            [_coverView addSubview:_effectVie];
+            effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+            effectView.frame = _coverView.bounds;
+            [_coverView addSubview:effectView];
         }
         CGFloat alpha = 1.f;
+        if (_coverViewType & LBTransitionsCoverViewTypeNone) {
+            alpha = 0.f;
+        }
         if (_coverViewType & LBTransitionsCoverViewAlpha0_1) {
             alpha = log(LBTransitionsCoverViewAlpha0_1)/log(2)/10.f;
-        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_2){
+        }
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_2){
             alpha = log(LBTransitionsCoverViewAlpha0_2)/log(2)/10.f;
-        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_3){
+        }
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_3){
             alpha = log(LBTransitionsCoverViewAlpha0_3)/log(2)/10.f;
-        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_4){
+        }
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_4){
             alpha = log(LBTransitionsCoverViewAlpha0_4)/log(2)/10.f;
-        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_5){
+        }
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_5){
             alpha = log(LBTransitionsCoverViewAlpha0_5)/log(2)/10.f;
-        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_6){
+        }
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_6){
             alpha = log(LBTransitionsCoverViewAlpha0_6)/log(2)/10.f;
-        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_7){
+        }
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_7){
             alpha = log(LBTransitionsCoverViewAlpha0_7)/log(2)/10.f;
-        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_8){
+        }
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_8){
             alpha = log(LBTransitionsCoverViewAlpha0_8)/log(2)/10.f;
-        }else if (_coverViewType & LBTransitionsCoverViewAlpha0_9){
+        }
+        if (_coverViewType & LBTransitionsCoverViewAlpha0_9){
             alpha = log(LBTransitionsCoverViewAlpha0_9)/log(2)/10.f;
         }
         
-        if (_effectVie) {
-            _effectVie.alpha = alpha;
+        if (effectView) {
+            effectView.alpha = alpha;
         }else{
             _coverView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
         }
-        
         
         //The modal view itself
         switch (self.contentMode) {
@@ -202,4 +222,10 @@ typedef enum {
     [toVC loadView];
     return nil;
 }
+-(void)coverViewTopGestureAction{
+    if (self.tapCoverViewDismiss) {
+        [self.modalViewVC dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
 @end
