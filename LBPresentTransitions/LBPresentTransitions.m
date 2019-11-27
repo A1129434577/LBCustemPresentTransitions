@@ -162,6 +162,7 @@ typedef enum {
         //The modal view itself
         modalViewVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
         typeof(self) __weak weakSelf = self;
+        [modalViewVC.presentingViewController viewWillAppear:NO];
         [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:1.0 options:0 animations:^{
             weakSelf.coverView.alpha = 0.0;
             switch (weakSelf.contentMode) {
@@ -189,6 +190,7 @@ typedef enum {
         } completion:^(BOOL finished) {
             [weakSelf.coverView removeFromSuperview];
             [transitionContext completeTransition:YES];
+            [modalViewVC.presentingViewController viewDidAppear:NO];
         }];
     }
 }
