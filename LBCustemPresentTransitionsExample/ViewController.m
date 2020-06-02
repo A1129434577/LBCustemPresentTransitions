@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "LBPresentTransitions.h"
 #import "TestViewController.h"
+#import "LBPresentTransitionsTestPushVC1.h"
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSArray<NSString *> *_textArray;
@@ -22,7 +23,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title = @"LBCustemPresentTransitions";
-    _textArray = @[@"从上面推出",@"从左边推出",@"从下面推出",@"从中间推出",@"从右推出"];
+    _textArray = @[@"从上面推出",@"从左边推出",@"从下面推出",@"从中间推出",@"从右推出",@"弹窗再push"];
     
     UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     tableView.estimatedSectionHeaderHeight = 0;
@@ -68,16 +69,26 @@
     }
     TestViewController *presentVC = [[TestViewController alloc] init];
 
-    if ([text containsString:@"下"]) {
-        UINavigationController *presentNaVC = [[UINavigationController alloc] initWithRootViewController:presentVC];
-        presentNaVC.modalPresentationStyle = UIModalPresentationCustom;
-        presentNaVC.transitioningDelegate = _transitions;
-        [self presentViewController:presentNaVC animated:YES completion:nil];
-    }else{
-        presentVC.modalPresentationStyle = UIModalPresentationCustom;
-        presentVC.transitioningDelegate = _transitions;
-        [self presentViewController:presentVC animated:YES completion:nil];
+    if ([text containsString:@"推出"]) {
+        if ([text containsString:@"下"]) {
+            UINavigationController *presentNaVC = [[UINavigationController alloc] initWithRootViewController:presentVC];
+            presentNaVC.modalPresentationStyle = UIModalPresentationCustom;
+            presentNaVC.transitioningDelegate = _transitions;
+            [self presentViewController:presentNaVC animated:YES completion:nil];
+        }else{
+            presentVC.modalPresentationStyle = UIModalPresentationCustom;
+            presentVC.transitioningDelegate = _transitions;
+            [self presentViewController:presentVC animated:YES completion:nil];
+        }
+    }else if ([text containsString:@"弹窗再push"]) {
+        LBPresentTransitionsTestPushVC1 *presentTransitionsTestVC = [[LBPresentTransitionsTestPushVC1 alloc] init];
+        UINavigationController *presentTransitionsTestNaVC = [[UINavigationController alloc] initWithRootViewController:presentTransitionsTestVC];
+        presentTransitionsTestNaVC.modalPresentationStyle = UIModalPresentationCustom;
+        presentTransitionsTestNaVC.transitioningDelegate = presentTransitionsTestVC.transitions;
+        
+        [self presentViewController:presentTransitionsTestNaVC animated:YES completion:NULL];
     }
+    
 }
 
 @end
