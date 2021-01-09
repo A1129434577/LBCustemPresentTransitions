@@ -227,6 +227,9 @@ typedef enum {
     if (self.tapCoverViewDismiss) {
         [self.modalViewVC dismissViewControllerAnimated:YES completion:nil];
     }
+    if (self.coverViewTopGestureActionHandle) {
+        self.coverViewTopGestureActionHandle();
+    }
 }
 
 @end

@@ -42,5 +42,5 @@ typedef NS_OPTIONS(NSUInteger, LBTransitionsCoverViewType) {
 @property (nonatomic,assign)LBTransitionsContentMode contentMode;
 @property (nonatomic,assign)LBTransitionsCoverViewType coverViewType;
 @property (nonatomic,assign)BOOL tapCoverViewDismiss;//点击空白让viewControllerDismiss
-
+@property (nonatomic,copy) void(^coverViewTopGestureActionHandle)();
 @end
