@@ -66,9 +66,15 @@
         _transitions.contentMode = LBTransitionsContentModeRight;
     }else if ([text containsString:@"中"]) {
         _transitions.contentMode = LBTransitionsContentModeCenter;
+        _transitions.customPresentAnimation = ^(UIView * _Nonnull coverView, UIView * _Nonnull contentView, void (^ _Nonnull completion)(BOOL)) {
+            [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:1 options:0 animations:^{
+                coverView.alpha = 1.0;
+                contentView.transform = CGAffineTransformIdentity;
+            } completion:completion];
+        };
     }
     TestViewController *presentVC = [[TestViewController alloc] init];
-
+    
     if ([text containsString:@"推出"]) {
         if ([text containsString:@"下"]) {
             UINavigationController *presentNaVC = [[UINavigationController alloc] initWithRootViewController:presentVC];
