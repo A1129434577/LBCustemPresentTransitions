@@ -13,7 +13,7 @@ typedef enum {
 } LBTransitionsAnimationType;
 
 
-@interface LBPresentTransitions ()<UIViewControllerAnimatedTransitioning,UINavigationControllerDelegate>
+@interface LBPresentTransitions ()<UIViewControllerAnimatedTransitioning>
 @property (nonatomic,assign)LBTransitionsAnimationType type;
 @property (nonatomic,strong)UIView *coverView;
 @property (nonatomic,weak)  UIViewController *modalViewVC;
@@ -131,65 +131,80 @@ typedef enum {
         
         typeof(self) __weak weakSelf = self;
         //Animate using spring animation
-        [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
-            weakSelf.coverView.alpha = 1.0;
-            switch (weakSelf.contentMode) {
-                case LBTransitionsContentModeTop:
-                    modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), 0, CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
-                    break;
-                case LBTransitionsContentModeLeft:
-                    modalViewVC.view.frame = CGRectMake(0, CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
-                    break;
-                case LBTransitionsContentModeBottom:
-                    modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), CGRectGetHeight(containerView.frame)-CGRectGetHeight(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
+        
+        if (self.customPresentAnimation) {
+            weakSelf.customPresentAnimation(weakSelf.coverView, modalViewVC.view, ^(BOOL finished) {
+                [transitionContext completeTransition:YES];
+            });
+        }else{
+            [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+                weakSelf.coverView.alpha = 1.0;
+                switch (weakSelf.contentMode) {
+                    case LBTransitionsContentModeTop:
+                        modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), 0, CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
+                        break;
+                    case LBTransitionsContentModeLeft:
+                        modalViewVC.view.frame = CGRectMake(0, CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
+                        break;
+                    case LBTransitionsContentModeBottom:
+                        modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), CGRectGetHeight(containerView.frame)-CGRectGetHeight(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
 
-                    break;
-                case LBTransitionsContentModeRight:
-                    modalViewVC.view.frame = CGRectMake(CGRectGetWidth(containerView.frame)-CGRectGetWidth(modalViewVC.view.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
-                    break;
-                case LBTransitionsContentModeCenter:
-                    modalViewVC.view.transform = CGAffineTransformIdentity;
-                    break;
-                    
-                default:
-                    break;
-            }
-        }completion:^(BOOL finished) {
-            [transitionContext completeTransition:YES];
-        }];
+                        break;
+                    case LBTransitionsContentModeRight:
+                        modalViewVC.view.frame = CGRectMake(CGRectGetWidth(containerView.frame)-CGRectGetWidth(modalViewVC.view.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
+                        break;
+                    case LBTransitionsContentModeCenter:
+                        modalViewVC.view.transform = CGAffineTransformIdentity;
+                        break;
+                        
+                    default:
+                        break;
+                }
+            }completion:^(BOOL finished) {
+                [transitionContext completeTransition:YES];
+            }];
+        }
 
     } else if (self.type == LBAnimationTypeDismiss) {
         //The modal view itself
         modalViewVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
         typeof(self) __weak weakSelf = self;
-        [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:1.0 options:0 animations:^{
-            weakSelf.coverView.alpha = 0.0;
-            switch (weakSelf.contentMode) {
-                case LBTransitionsContentModeTop:
-                    modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), -CGRectGetHeight(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
-                    break;
-                case LBTransitionsContentModeLeft:
-                    modalViewVC.view.frame = CGRectMake(-CGRectGetWidth(modalViewVC.view.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
-                    break;
-                case LBTransitionsContentModeBottom:
-                    modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), CGRectGetHeight(containerView.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
-                    
-                    break;
-                case LBTransitionsContentModeRight:
-                    modalViewVC.view.frame = CGRectMake(CGRectGetWidth(containerView.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
-                    break;
-                case LBTransitionsContentModeCenter:
-                    modalViewVC.view.transform = CGAffineTransformMakeScale(0, 0);
-                    break;
-                    
-                default:
-                    break;
-            }
 
-        } completion:^(BOOL finished) {
-            [weakSelf.coverView removeFromSuperview];
-            [transitionContext completeTransition:YES];
-        }];
+        if (self.customDismissAnimation) {
+            self.customDismissAnimation(_coverView, modalViewVC.view, ^(BOOL finished) {
+                [weakSelf.coverView removeFromSuperview];
+                [transitionContext completeTransition:YES];
+            });
+        }else{
+            [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:1.0 options:0 animations:^{
+                weakSelf.coverView.alpha = 0.0;
+                switch (weakSelf.contentMode) {
+                    case LBTransitionsContentModeTop:
+                        modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), -CGRectGetHeight(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
+                        break;
+                    case LBTransitionsContentModeLeft:
+                        modalViewVC.view.frame = CGRectMake(-CGRectGetWidth(modalViewVC.view.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
+                        break;
+                    case LBTransitionsContentModeBottom:
+                        modalViewVC.view.frame = CGRectMake(CGRectGetMinX(modalViewVC.view.frame), CGRectGetHeight(containerView.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
+                        
+                        break;
+                    case LBTransitionsContentModeRight:
+                        modalViewVC.view.frame = CGRectMake(CGRectGetWidth(containerView.frame), CGRectGetMinY(modalViewVC.view.frame), CGRectGetWidth(modalViewVC.view.frame), CGRectGetHeight(modalViewVC.view.frame));
+                        break;
+                    case LBTransitionsContentModeCenter:
+                        modalViewVC.view.transform = CGAffineTransformMakeScale(0, 0);
+                        break;
+                        
+                    default:
+                        break;
+                }
+
+            } completion:^(BOOL finished) {
+                [weakSelf.coverView removeFromSuperview];
+                [transitionContext completeTransition:YES];
+            }];
+        }
     }
 }
 
@@ -208,21 +223,7 @@ typedef enum {
     return self;
 }
 
-#pragma mark - Navigation Controller Delegate
-//当前已经自定义转场动画的UINavigationController再次push或者pop的时候会走这个方法
--(id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
-    
-    __block CGFloat modelViewHeight = 0.f;
-    [toVC.view.subviews enumerateObjectsUsingBlock:^(UIView  *contentView, NSUInteger idx, BOOL * _Nonnull stop) {
-        modelViewHeight += CGRectGetHeight(contentView.bounds);
-    }];
-    [UIView animateWithDuration:0.3 animations:^{
-        navigationController.view.frame = CGRectMake(CGRectGetMinX(navigationController.view.frame), (CGRectGetHeight([UIScreen mainScreen].bounds)-modelViewHeight)/2, CGRectGetWidth(navigationController.view.frame), modelViewHeight);
-    }];
-    
-    [toVC loadView];
-    return nil;
-}
+#pragma mark private
 -(void)coverViewTopGestureAction{
     if (self.tapCoverViewDismiss) {
         [self.modalViewVC dismissViewControllerAnimated:YES completion:nil];

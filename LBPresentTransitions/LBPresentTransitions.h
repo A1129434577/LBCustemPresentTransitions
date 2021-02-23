@@ -41,5 +41,7 @@ typedef NS_OPTIONS(NSUInteger, LBTransitionsCoverViewType) {
 @property (nonatomic,assign)LBTransitionsContentMode contentMode;
 @property (nonatomic,assign)LBTransitionsCoverViewType coverViewType;
 @property (nonatomic,assign)BOOL tapCoverViewDismiss;//点击空白让viewControllerDismiss
-@property (nonatomic,copy) void(^coverViewTopGestureActionHandle)(void);
+@property (nonatomic,copy,nullable) void(^coverViewTopGestureActionHandle)(void);
+@property (nonatomic,copy,nullable) void(^customPresentAnimation)(UIView * _Nonnull coverView, UIView * _Nonnull contentView, void (^ _Nonnull completion)(BOOL finished));//你也可以不用预设present动画，在block里写自己的动画(注意这里的completion必须在你实现的动画结束时调用以使vc有正常的生命周期)
+@property (nonatomic,copy,nullable) void(^customDismissAnimation)(UIView * _Nonnull coverView, UIView * _Nonnull contentView, void (^ _Nonnull completion)(BOOL finished));//你也可以不用预设dismiss动画，在block里写自己的动画(注意这里的completion必须在你实现的动画结束时调用以使vc有正常的生命周期)
 @end

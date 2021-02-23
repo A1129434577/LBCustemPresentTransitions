@@ -55,4 +55,17 @@
 -(void)dismiss{
     [self.navigationController?self.navigationController:self dismissViewControllerAnimated:YES completion:nil];
 }
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    NSLog(@"1");
+}
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    NSLog(@"2");
+}
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    NSLog(@"3");
+    
+}
 @end
